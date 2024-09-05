@@ -9,51 +9,47 @@ import android.widget.EditText
 import android.widget.Button
 import android.widget.Toast
 import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import com.example.imc_app.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        // Referencias a los EditText en el layout
-        val editTextWeight = findViewById<EditText>(R.id.editTextWeight)
-        val editTextHeight = findViewById<EditText>(R.id.editTextHeight)
-        val buttonCalculate = findViewById<Button>(R.id.buttonCalculate)
-        val textViewIMCValue = findViewById<TextView>(R.id.textViewIMCValue)
-        val textViewIMCType = findViewById<TextView>(R.id.textViewIMCType)
-
-        // Listener para limpiar el texto por defecto al enfocarse
-        editTextWeight.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && editTextWeight.text.toString() == "Ejemplo: 70") {
-                editTextWeight.text = null
-            }
-        }
-
-        editTextHeight.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && editTextHeight.text.toString() == "Ejemplo: 170") {
-                editTextHeight.text = null
-            }
-        }
-
-        // Listener para el botón Calcular
-        buttonCalculate.setOnClickListener {
-            val height = editTextHeight.text.toString().toFloatOrNull()
-            val weight = editTextWeight.text.toString().toFloatOrNull()
-
-            if (weight != null && height != null && height != 0f){
-                val heightInMeters = height / 100
-                val imc = weight / (heightInMeters * heightInMeters)
-                textViewIMCValue.text = "Tu IMC es: %.2f".format(imc) // Actualiza el valor del IMC
-                if (imc < 18.5) {
-                    textViewIMCType.text = "Tu peso es bajo"
-                } else if (imc < 24.9) {
-                    textViewIMCType.text = "Tu peso es normal"
-                } else {
-                    textViewIMCType.text = "Tienes sobrepeso"
+        binding.apply {
+            binding.editTextWeight.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus && binding.editTextWeight.text.toString() == "Ejemplo: 70") {
+                    binding.editTextWeight.text = null
                 }
-            } else {
-                Toast.makeText(this, "Ingrese valores validos", Toast.LENGTH_LONG).show()
+            }
+
+            binding.editTextHeight.setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus && binding.editTextHeight.text.toString() == "Ejemplo: 170") {
+                    binding.editTextHeight.text = null
+                }
+            }
+
+            binding.buttonCalculate.setOnClickListener {
+                val height = binding.editTextHeight.text.toString().toFloatOrNull()
+                val weight = binding.editTextWeight.text.toString().toFloatOrNull()
+
+                if (weight != null && height != null && height != 0f){
+                    val heightInMeters = height / 100
+                    val imc = weight / (heightInMeters * heightInMeters)
+                    binding.textViewIMCValue.text = "Tu IMC es: %.2f".format(imc) // Actualiza el valor del IMC
+                    if (imc < 18.5) {
+                        binding.textViewIMCType.text = "Tu peso es bajo"
+                    } else if (imc < 24.9) {
+                        binding.textViewIMCType.text = "Tu peso es normal"
+                    } else {
+                        binding.textViewIMCType.text = "Tienes sobrepeso"
+                    }
+                } else {
+                    Toast.makeText(this@MainActivity, "Ingrese valores validos", Toast.LENGTH_LONG).show()
+                }
             }
         }
 
